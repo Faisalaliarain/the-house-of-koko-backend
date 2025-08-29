@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    restart: always
+    container_name: the-project-name-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: the_project-name
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - '27017:27017'
+    networks:
+      - project-name-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: the-project-name-backend
+    restart: always
+    env_file:
+      - ./config/docker.env
+    ports:
+      - '5000:5000'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - project-name-network
+    volumes:
+      - ./uploads:/app/uploads
+      - ./config:/app/config:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Development service with hot reload
+  backend-dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: the-project-name-backend-dev
+    restart: unless-stopped
+    env_file:
+      - ./config/docker.env
+    environment:
+      NODE_ENV: development
+    ports:
+      - '5001:5000'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - project-name-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./uploads:/app/uploads
+    command: npm run start:dev
+    profiles:
+      - dev
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  project-name-network:
+    driver: bridge

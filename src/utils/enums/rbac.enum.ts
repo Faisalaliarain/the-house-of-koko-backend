@@ -1,0 +1,42 @@
+export enum RbacEntities {
+  USER = 'USER',
+}
+
+export enum RbacRoleCategory {
+  BASE = 'BASE',
+  CUSTOM = 'CUSTOM',
+}
+
+export enum RbacRoleMachineName {
+  SOX_BASE_ADMIN = 'SOX_BASE_ADMIN',
+  SOX_BASE_USER = 'SOX_BASE_USER',
+  SOX_BASE_GUEST = 'SOX_BASE_GUEST',
+}
+
+export enum EntityPath {
+  PATH_PARAM_ID = 'params.id',
+  PATH_PARAM_USER_ID = 'params.userId',
+  BODY_USER_ID = 'body.userId',
+}
+
+// User Permissions
+export enum UserPermissions {
+  VIEW_ONE = 'USER.VIEW_ONE',
+  VIEW_ALL = 'USER.VIEW_ALL',
+  CREATE = 'USER.CREATE',
+  UPDATE = 'USER.UPDATE',
+  DELETE = 'USER.DELETE',
+  APPROVE = 'USER.APPROVE',
+  BLOCK = 'USER.BLOCK',
+  VIEW_PROFILE = 'USER.VIEW_PROFILE',
+  UPDATE_PROFILE = 'USER.UPDATE_PROFILE',
+}
+
+export enum NotificationPermissions {
+  VIEW_ONE = 'NOTIFICATION.VIEW_ONE',
+  VIEW_ALL = 'NOTIFICATION.VIEW_ALL',
+  CREATE = 'NOTIFICATION.CREATE',
+  UPDATE = 'NOTIFICATION.UPDATE',
+  DELETE = 'NOTIFICATION.DELETE',
+  MARK_READ = 'NOTIFICATION.MARK_READ',
+}

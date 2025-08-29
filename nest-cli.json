@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "envFilePath": [".env"],
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "assets": [
+      "**/*.env",
+      "**/*.hbs",
+      "firebase-admin-sdk.json"
+    ]
+  }
+}

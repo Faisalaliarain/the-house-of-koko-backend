@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>OTP Verification</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6f6;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        .container {
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 20px;
+            color: #313131;
+            margin: 0 0 10px;
+        }
+        p {
+            color: #313131;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 8px 0;
+        }
+        .otp {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+            margin: 20px 0;
+            padding: 12px 20px;
+            border-radius: 5px;
+            border: 1px solid #313131;
+            background-color: #fff;
+            text-align: center;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            padding: 15px 20px;
+        }
+        .logo{
+            display: block;
+            height: auto;
+            max-width: 100%;
+            position: relative;
+            top:-30px
+
+        }
+        .dogs {
+            display: block;
+            height: auto;
+            max-width: 100%;
+            position: relative;
+            top:61px !important;
+        }
+
+        @media only screen and (max-width: 600px) {
+            h1 { font-size: 16px !important; }
+            p { font-size: 12px !important; }
+            .otp { font-size: 18px !important; padding: 10px !important}
+            .logo { width: 40px !important; top:-40px !important; }
+            .dogs { width: 220px !important; top:71px !important;  position: relative}
+            .content { padding: 15px !important; }
+        }
+    </style>
+</head>
+<body>
+<table role="presentation" class="container" cellpadding="0" cellspacing="0" width="100%">
+    <!-- Header -->
+    <tr>
+        <td style="padding:0; margin:0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%"
+                   style="background:linear-gradient(90deg,#fce3df 0%,#e7f2f7 100%); min-height: 200px">
+                <tr>
+                    <td style="padding:20px;">
+                        <table role="presentation" width="100%">
+                            <tr>
+                                <td valign="top" >
+                                    <img src="https://app-dev.project-name.project-name.io/app-logo.png" alt="logo" class="logo" width="55" />
+                                </td>
+                                <td align="right" valign="bottom">
+                                    <img src="https://app-dev.project-name.project-name.io/dogs-images-img.png"
+                                         alt="Puppies illustration" class="dogs" width="300" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <!-- OTP Content -->
+    <tr>
+        <td class="content" style="padding:25px;">
+            <h1>Your Account Verification for The project-name</h1>
+            <p>Hello {{name}},</p>
+            <p><strong>Following is the OTP code to verify your account:</strong></p>
+            <div class="otp">{{otp}}</div>
+            <p>Use it within 2 minutes before it self-destructs (okay… it won’t really explode, but it will expire)</p>
+            <p>If you didn’t request this, please ignore this email.</p>
+            <p>Stay Awesome,<br/><strong>Team The project-name</strong></p>
+        </td>
+    </tr>
+
+
+</table>
+</body>
+</html>

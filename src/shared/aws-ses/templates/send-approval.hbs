@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{{eventName}} — Your Ticket</title>
+    <style>
+        /* Basic reset for email clients */
+        body,table,td,a{ -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+        table,td{ mso-table-lspace:0pt; mso-table-rspace:0pt; }
+        img{ -ms-interpolation-mode:bicubic; display:block; border:0; outline:none; text-decoration:none; }
+        body{ margin:0; padding:0; width:100%; background:#f4f6f8; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+        /* Container */
+        .outer { width:100%; max-width:680px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 8px 30px rgba(20,20,30,0.06); }
+
+        /* Hero */
+        .hero { width:100%; height:auto; display:block; }
+        .hero-wrap { padding:22px 26px 0 26px; text-align:left; }
+
+        h1 { margin:0; font-size:20px; color:#0f1724; }
+        p.lead { margin:8px 0 0 0; color:#475569; font-size:14px; }
+
+        /* Ticket card */
+        .ticket {
+            margin:18px 26px;
+            background: linear-gradient(135deg,#0ea5a3 0%, #0369a1 100%);
+            color:#fff;
+            border-radius:10px;
+            padding:16px;
+            display:flex;
+            align-items:center;
+            gap:14px;
+            box-shadow: 0 6px 18px rgba(3,105,161,0.12);
+        }
+        .ticket-left { flex:1; min-width:0; }
+        .ticket-title { font-size:16px; font-weight:700; margin:0 0 6px 0; }
+        .ticket-sub { margin:0; font-size:13px; opacity:0.95; }
+        .ticket-meta { margin-top:10px; font-size:13px; opacity:0.95; }
+
+        .qr { width:110px; height:110px; border-radius:8px; background:#fff; padding:8px; display:block; }
+
+        /* Buttons */
+        .btn-row { padding:18px 26px 28px 26px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+        .btn {
+            text-decoration:none;
+            display:inline-block;
+            padding:12px 18px;
+            border-radius:10px;
+            font-weight:700;
+            font-size:14px;
+        }
+        .btn-google { background:#fff; color:#0f1724; border:1px solid #e6eef2; box-shadow:0 2px 6px rgba(2,6,23,0.06); }
+        .btn-apple { background:#111827; color:#fff; }
+
+        /* Footer */
+        .footer { padding:14px 26px 26px 26px; color:#64748b; font-size:12px; text-align:center; }
+        .links { word-break:break-all; color:#0ea5a3; text-decoration:none; }
+
+        @media (max-width:480px){
+            .ticket { flex-direction:column; align-items:flex-start; gap:12px; }
+            .qr { width:100px; height:100px; }
+        }
+    </style>
+</head>
+<body>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f6f8; padding:28px 12px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="100%" class="outer" cellpadding="0" cellspacing="0">
+                <!-- HERO -->
+                <tr>
+                    <td style="background:#000000">
+                        <h3 style="margin-left: 10px; font-weight: 400; color: white">{{eventName}}</h3>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="hero-wrap">
+                        <!--                        <h1></h1>-->
+                        <p class="lead">Hello {{attendeeName}}, your ticket is approved ✅ — save it to your wallet or open the QR at the gate.</p>
+                    </td>
+                </tr>
+
+                <!-- TICKET CARD -->
+                <tr>
+                    <td>
+                        <div class="ticket" role="article" aria-label="Ticket">
+                            <div class="ticket-left">
+                                <div class="ticket-title">{{eventName}}</div>
+                                <div class="ticket-sub">{{eventDate}} • {{eventVenue}}</div>
+                                <div class="ticket-meta">
+                                    <!--                                    <div><strong>Ticket #</strong> {{ticketId}}</div>-->
+                                    <div><strong>Holder</strong> {{attendeeName}}</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                {{#if qrImage}}
+                                    <img src="{{qrImage}}" alt="QR code" class="qr" />
+                                {{else}}
+                                    <div style="width:110px;height:110px;border-radius:8px;background:#fff;padding:8px;"></div>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- BUTTONS -->
+                <tr>
+                    <td class="btn-row">
+                        <a href="{{googleWalletLink}}" class="btn btn-google" target="_blank" rel="noopener">
+  <span style="display:inline-block; vertical-align:middle; margin-right:8px;">
+    <!-- Inline Google Wallet SVG -->
+    <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#4285f4" d="M10 35.7V12.3c0-1.26 1.02-2.28 2.28-2.28h23.44c1.26 0 2.28 1.02 2.28 2.28v23.44c0 1.26-1.02 2.28-2.28 2.28H12.28C11.02 38 10 36.98 10 35.7z"/>
+      <path fill="#fff" d="M32.48 16.34H26.2v15.32h6.28c3.02 0 5.46-2.44 5.46-5.46v-4.4c0-3.02-2.44-5.46-5.46-5.46z"/>
+      <path fill="#34a853" d="M26.2 31.66v-15.32H19.9v15.32z"/>
+      <path fill="#fbbc04" d="M13.56 21.8c-.73 0-1.32.59-1.32 1.32v1.76c0 .73.59 1.32 1.32 1.32h6.34v-4.4h-6.34z"/>
+      <path fill="#ea4335" d="M13.56 16.34c-.73 0-1.32.59-1.32 1.32v2.64c0 .73.59 1.32 1.32 1.32h6.34v-5.28h-6.34z"/>
+    </svg>
+  </span>
+                            Add to Google Wallet
+                        </a>
+
+
+                        <a href="{{appleWalletLink}}" class="btn btn-apple" target="_blank" rel="noopener">
+                <span style="display:inline-block; vertical-align:middle; margin-right:8px;">
+                  <!-- white apple -->
+                  <svg width="18" height="20" viewBox="0 0 24 24" fill="none" style="vertical-align:middle" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.365 1.43c-.91.11-2.02.62-2.68 1.33-.58.61-1.08 1.5-1 2.37 1.08.03 2.22-.61 2.82-1.32.62-.73 1.03-1.63.86-1.87z" fill="#fff"/>
+                    <path d="M20.5 7.7c-.12-.28-.37-.55-.63-.77-1.06-.86-2.84-1.2-4.1-1.2-.96 0-2.08.31-2.86.31-.84 0-2.12-.31-3.28-.31-1.3 0-3.24.58-4.28 1.44-1.86 1.44-2.9 3.93-2.9 6.45 0 2.43.86 4.5 2.58 6.06 1.1 1.04 2.8 1.98 4.52 1.98 1.04 0 2.22-.37 3.28-.37 1.06 0 2.14.37 3.28.37 1.7 0 3.2-.92 4.32-2.05 1.34-1.37 2.02-3.26 2.02-5.16 0-2.79-1.6-4.94-3.7-6.04z" fill="#fff"/>
+                  </svg>
+                </span>
+                            Add to Apple Wallet
+                        </a>
+                    </td>
+                </tr>
+
+                <!-- FOOTER / LINKS -->
+                <tr>
+                    <td class="footer">
+                        <div>Can't click the buttons? Copy & paste these links into your browser:</div>
+                        <div style="margin-top:8px;">
+                            <div><strong>Google:</strong> <a href="{{googleWalletLink}}" class="links">{{googleWalletLink}}</a></div>
+                            <div style="margin-top:6px;"><strong>Apple:</strong> <a href="{{appleWalletLink}}" class="links">{{appleWalletLink}}</a></div>
+                        </div>
+
+                        <div style="margin-top:12px; color:#94a3b8; font-size:12px;">
+                            Need help? Reply to this email or contact support at <a href="mailto:support@project-name.com" class="links">support@project-name.com</a>
+                        </div>
+                        <div style="margin-top:10px; font-size:11px; color:#cbd5e1;">
+                            © 2025 The project-name. All rights reserved.
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

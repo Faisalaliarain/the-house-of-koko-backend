@@ -1,0 +1,3 @@
+@echo off
+echo Starting The project-name Backend...
+node dist/src/main.js

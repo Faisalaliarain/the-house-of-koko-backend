@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>OTP Verification</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6f6;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        .container {
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 20px;
+            color: #313131;
+            margin: 0 0 10px;
+        }
+        p {
+            color: #313131;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 8px 0;
+        }
+        .otp {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+            margin: 20px 0;
+            padding: 12px 20px;
+            border-radius: 5px;
+            border: 1px solid #313131;
+            background-color: #fff;
+            text-align: center;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            padding: 15px 20px;
+        }
+        .logo{
+            display: block;
+            height: auto;
+            max-width: 100%;
+            position: relative;
+            top:-30px
+
+        }
+        .dogs {
+            display: block;
+            height: auto;
+            max-width: 100%;
+            position: relative;
+            top:61px !important;
+        }
+        a.button {
+            width:calc(100% - 65px);display:block; padding: 12px 30px; font-size: 16px;background-color: #E6E6E6; color: #313131; text-decoration: none; font-weight: 300; border-radius: 6px; text-align: center;
+        }
+        @media only screen and (max-width: 600px) {
+            h1 { font-size: 16px !important; }
+            p { font-size: 12px !important; }
+            .otp { font-size: 18px !important; padding: 10px !important}
+            .logo { width: 40px !important; top:-40px !important; }
+            .dogs { width: 220px !important; top:71px !important;  position: relative}
+            .content { padding: 15px !important; }
+            a.button {
+                font-size: 12px;
+                padding: 10px 20px;
+                width:calc(100% - 50px);
+            }
+        }
+    </style>
+</head>
+<body>
+<table role="presentation" class="container" cellpadding="0" cellspacing="0" width="100%">
+    <!-- Header -->
+    <tr>
+        <td style="padding:0; margin:0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%"
+                   style="background:linear-gradient(90deg,#fce3df 0%,#e7f2f7 100%); min-height: 200px">
+                <tr>
+                    <td style="padding:20px;">
+                        <table role="presentation" width="100%">
+                            <tr>
+                                <td valign="top" >
+                                    <img src="https://app-dev.project-name.project-name.io/app-logo.png" alt="logo" class="logo" width="55" />
+                                </td>
+                                <td align="right" valign="bottom">
+                                    <img src="https://app-dev.project-name.project-name.io/dogs-images-img.png"
+                                         alt="Puppies illustration" class="dogs" width="300" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <!-- OTP Content -->
+    <tr>
+        <td class="content" style="padding:25px;">
+            <h1>Received Event Application</h1>
+            <p>Hello {{name}},</p>
+            <p>We’ve successfully received your registration for {{eventName}}.</p>
+
+            <p>Our team will review your profile and get back to you about the status of your event application.
+                If you make the shortlist, expect an official invite to land in your inbox, complete with all the exciting details.</p>
+
+            <a class="button">
+                Event Name:  {{eventName}} {{startTime}}
+            </a>
+            <p>If you have any questions or need support, feel free to reply to this email or contact us at <a href="mailto:support@theproject-name.com" style="color: #313131">support@theproject-name.com</a></p>
+            <p>Stay Awesome,<br/><strong>Team The project-name</strong></p>
+        </td>
+    </tr>
+
+
+</table>
+</body>
+</html>
