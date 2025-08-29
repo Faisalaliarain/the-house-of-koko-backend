@@ -9,14 +9,15 @@ export class FirebaseService {
 
     constructor() {
          try {
-            if (!admin.apps.length) {
-                admin.initializeApp({
-                    credential: admin.credential.cert(
-                        serviceAccountJson as admin.ServiceAccount,
-                    ),
-                });
-            }
-            this.messaging = admin.messaging();
+            // INFO: Comment out for now, not sure how to get the service account json
+            // if (!admin.apps.length) {
+            //     admin.initializeApp({
+            //         credential: admin.credential.cert(
+            //             serviceAccountJson as admin.ServiceAccount,
+            //         ),
+            //     });
+            // }
+            // this.messaging = admin.messaging();
         } catch (err) {
             throw new Error('Firebase initialization failed');
         }
