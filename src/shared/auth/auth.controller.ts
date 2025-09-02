@@ -40,6 +40,7 @@ export class AuthController {
   async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
+  
   @Post('resend-otp')
   @ApiOperation({ summary: 'Resend new OTP' })
   @ApiBody({ type: ResendOtpDto })

@@ -34,7 +34,7 @@ export class User {
   @Prop()
   invitedBy?: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   agreedToTerms: boolean;
 
   @Prop({ enum: UserRole, default: UserRole.GUEST })

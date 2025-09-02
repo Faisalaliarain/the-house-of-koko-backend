@@ -15,7 +15,7 @@ import { NotificationModule } from './shared/notification/notification.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/nest-boiler-plate'),
+    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/koko'),
     ScheduleModule.forRoot(),
     SharedModule,
     UploadModule,

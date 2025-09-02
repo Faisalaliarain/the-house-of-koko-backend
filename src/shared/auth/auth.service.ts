@@ -44,22 +44,6 @@ export class AuthService {
       throw new UnauthorizedException('Your account has been blocked.');
     }
 
-    // Profile not setup yet
-    if ((user.role !== "admin") && !user.profile) {
-      throw new HttpException(
-        'Please complete your profile first.',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    //admin not approved yet
-    if (!user.isApproved) {
-      throw new HttpException(
-        'Your profile is submitted and awaiting admin approval.',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
     return user;
   }
 
@@ -83,13 +67,6 @@ export class AuthService {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpiry = new Date(Date.now() + 2 * 60 * 1000); // 10 minutes
 
-    // Step 1: Generate a unique referral code for this new user
-    
-    const referralCode = nanoid(8); // You can customize length
-
-    // Step 2: Default credits
-    const credits = 0;
-    const referralCodeUsed = registerDto.referralCode || ''
     const postObject = {
       ...registerDto,
       email: registerDto?.email?.toLowerCase(),
@@ -99,53 +76,18 @@ export class AuthService {
       role: UserRole.GUEST, // Default role for new registrations
       isVerified: false,
       isApproved: false,
-      referralCode,
-      credits,
-      referralCodeUsed
     }
-    // Step 3: If referral code is provided, credit the inviter
-    /*if (registerDto.referralCode) {
-      const inviter = await this.usersService.findByReferralCode(registerDto.referralCode);
-      postObject.referralCodeUsed = registerDto.referralCode
-      if (inviter) {
-        const inviteRecord = await this.referralInviteModel.findOne({
-          inviteeEmail: registerDto.email,
-          inviterId: inviter.id, // 👈 fix here
-        });
-
-        if (inviteRecord) {
-          if (inviteRecord.expiresAt && inviteRecord.expiresAt < new Date()) {
-            throw new Error('Invite expired');
-          }
-
-          if (inviteRecord.usageCount >= inviteRecord.maxUsage) {
-            throw new Error('Invite usage limit reached');
-          }
-
-          inviteRecord.usageCount++;
-          inviteRecord.isUsed = true;
-          await inviteRecord.save();
-        }
-
-        // credit inviter
-        inviter.credits += 50;
-        await inviter.save(); // 👈 ensure inviter is a Mongoose document, not lean
-        registerDto.invitedBy = inviter.id; // 👈 fix here
-        registerDto.invitedAt = new Date();
-      }
-    }*/
-
 
     await this.usersService.createUser(postObject);
-    this.awsSes.sendEmailWithTemplate(
-      [registerDto.email],
-      'Your OTP Code for Verification',
-      'otp-verification',
-      {
-        name: registerDto.name || 'User',
-        otp: otp,
-      }
-    ).then()
+    // this.awsSes.sendEmailWithTemplate(
+    //   [registerDto.email],
+    //   'Your OTP Code for Verification',
+    //   'otp-verification',
+    //   {
+    //     name: registerDto.name || 'User',
+    //     otp: otp,
+    //   }
+    // ).then()
 
     return { message: 'OTP sent to email. Please verify to continue.' };
   }
@@ -170,15 +112,15 @@ export class AuthService {
     await user.save();
 
     // Send email using AWS SES
-    await this.awsSes.sendEmailWithTemplate(
-      [user.email],
-      'Your OTP Code for Verification',
-      'otp-verification',
-      {
-        name: user.name || 'User',
-        otp,
-      }
-    );
+    // await this.awsSes.sendEmailWithTemplate(
+    //   [user.email],
+    //   'Your OTP Code for Verification',
+    //   'otp-verification',
+    //   {
+    //     name: user.name || 'User',
+    //     otp,
+    //   }
+    // );
 
     return { message: 'OTP resent to your email.' };
   }
@@ -187,7 +129,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user) throw new Error('User not found');
     if (user.isVerified) throw new Error('User already verified');
-    console.log(user.otp, dto.otp)
+
     const isExpired = user.otpExpiry && user.otpExpiry.getTime() < Date.now();
     if (isExpired) throw new Error('OTP expired');
     if (user.otp != dto.otp) throw new Error('Invalid OTP');
@@ -199,7 +141,7 @@ export class AuthService {
 
     await user.save();
 
-    return { message: 'Account verified. Please complete your profile and request admin approval to proceed.' };
+    return { message: 'Account Verified Successfully' };
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
@@ -216,12 +158,12 @@ export class AuthService {
     user.resetPasswordExpires = expires as any;
     await user.save();
 
-    await this.awsSes.sendEmailWithTemplate(
-      [user.email],
-      'Your Email Verification to Reset Password for The project-name',
-      TEMPLATE_NAME.FORGOT_PASSWORD_OTP,
-      { name: user.name || 'User', otp }
-    );
+    // await this.awsSes.sendEmailWithTemplate(
+    //   [user.email],
+    //   'Your Email Verification to Reset Password for The project-name',
+    //   TEMPLATE_NAME.FORGOT_PASSWORD_OTP,
+    //   { name: user.name || 'User', otp }
+    // );
 
     return { message: 'If an account exists, a code has been sent.' };
   }
@@ -268,12 +210,12 @@ export class AuthService {
       await user.save();
     }
 
-    await this.awsSes.sendEmailWithTemplate(
-      [user.email],
-      'Your Password Reset Code',
-      TEMPLATE_NAME.FORGOT_PASSWORD_OTP,
-      { name: user.name || 'User', otp }
-    );
+    // await this.awsSes.sendEmailWithTemplate(
+    //   [user.email],
+    //   'Your Password Reset Code',
+    //   TEMPLATE_NAME.FORGOT_PASSWORD_OTP,
+    //   { name: user.name || 'User', otp }
+    // );
 
     return { message: 'If an account exists, a code has been sent.' };
   }

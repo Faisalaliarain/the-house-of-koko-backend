@@ -17,38 +17,4 @@ export class RegisterDto {
   @IsString()
   @IsNotEmpty()
   password: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  companyProfile: Types.ObjectId;
-
-  @ApiProperty({ example: '+1-555-123-4567' })
-  @IsString()
-  @IsNotEmpty()
-  phoneNumber: string;
-
-  @ApiPropertyOptional({ example: 'REF1234' })
-  @IsOptional()
-  @IsString()
-  referralCode?: string;
-
-  @ApiPropertyOptional({ example: '2025-07-29T15:30:00.000Z', description: 'Timestamp when invite was sent' })
-  @IsOptional()
-  @IsString()
-  invitedAt?: Date;
-
-  @ApiPropertyOptional({ example: 'bfgjjsoeoeolsldassajdashkds', description: 'User ID or referral code of the inviter' })
-  @IsOptional()
-  @IsString()
-  invitedBy?: string;
-
-  @ApiPropertyOptional({ example: 'Google Ads' })
-  @IsOptional()
-  @IsString()
-  howDidYouHearAboutUs?: string;
-
-  @ApiProperty({ example: true })
-  @IsBoolean()
-  @IsNotEmpty()
-  agreedToTerms: boolean;
 }
