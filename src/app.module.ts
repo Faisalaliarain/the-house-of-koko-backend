@@ -8,6 +8,7 @@ import { SharedModule } from './shared/shared.module';
 import { UploadModule } from './upload/upload.module';
 import {AuthModule} from "./shared/auth/auth.module";
 import { NotificationModule } from './shared/notification/notification.module';
+import { PlanModule } from './shared/plan/plan.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { NotificationModule } from './shared/notification/notification.module';
     UploadModule,
     AuthModule,
     NotificationModule,
+    PlanModule,
   ],
   controllers: [AppController],
   providers: [AppService],

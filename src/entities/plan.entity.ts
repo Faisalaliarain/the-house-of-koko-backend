@@ -1,37 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-@Entity('plans')
+export type PlanDocument = Plan & Document;
+
+@Schema({ timestamps: true, collection: 'plans' })
 export class Plan {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ unique: true })
+  @Prop({ required: true, unique: true })
   name: string;
 
-  @Column('text')
+  @Prop({ required: true })
   description: string;
 
-  @Column('simple-array')
+  @Prop({ type: [String], required: true })
   features: string[];
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Prop({ required: true, type: Number })
   price: number;
 
-  @Column({ default: 'GBP' })
+  @Prop({ default: 'GBP' })
   currency: string;
 
-  @Column()
+  @Prop({ required: true })
   stripeProductId: string;
 
-  @Column()
+  @Prop({ required: true })
   stripePriceId: string;
 
-  @Column({ default: true })
+  @Prop({ default: true })
   isActive: boolean;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }
+
+export const PlanSchema = SchemaFactory.createForClass(Plan);

@@ -25,6 +25,7 @@
     "docker:dev": "docker-compose --profile dev up -d",
     "docker:prod": "docker-compose up -d",
     "seed": "ts-node src/seed/seed-users.ts",
+    "seed:plans": "ts-node src/scripts/seed-plans-manual.ts",
     "copy:templates": "cp -r src/shared/aws-ses/templates dist/shared/aws-ses/templates",
     "test:notifications": "ts-node src/scripts/test-notifications.ts"
   },

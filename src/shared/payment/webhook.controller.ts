@@ -9,7 +9,7 @@ export class WebhookController {
     const sig = req.headers['stripe-signature'];
     let event: Stripe.Event;
     try {
-      event = (new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2022-11-15' })).webhooks.constructEvent(
+      event = (new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-06-30.basil' })).webhooks.constructEvent(
         req.body,
         sig as string,
         process.env.STRIPE_WEBHOOK_SECRET!

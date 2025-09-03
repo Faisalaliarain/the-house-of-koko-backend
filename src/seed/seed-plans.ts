@@ -1,45 +1,64 @@
-import { getRepository } from 'typeorm';
-import { Plan } from '../entities/plan.entity';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from '../app.module';
+import { PlanService } from '../shared/plan/plan.service';
+import { PlanConfigService } from '../utils/services/plan-config.service';
 
-export async function seedPlans() {
-  const planRepo = getRepository(Plan);
-  const plans = [
-    {
-      name: 'Digital',
-      description: 'Access to digital streams, online events, and content.',
-      features: [
-        'Digital event access',
-        'Livestreams',
-        'Online concerts',
-      ],
-      price: 10.00,
-      currency: 'GBP',
-      stripeProductId: 'prod_xxx', // Replace with actual Stripe product ID
-      stripePriceId: 'price_xxx', // Replace with actual Stripe price ID
-      isActive: true,
-    },
-    {
-      name: 'VIP',
-      description: 'All-access hybrid membership and exclusive offers.',
-      features: [
-        'Physical event access',
-        'Table bookings',
-        'Exclusive offers',
-        'Digital event access',
-      ],
-      price: 50.00,
-      currency: 'GBP',
-      stripeProductId: 'prod_yyy', // Replace with actual Stripe product ID
-      stripePriceId: 'price_yyy', // Replace with actual Stripe price ID
-      isActive: true,
-    },
-    // Add more plans as needed
-  ];
+async function bootstrap() {
+  const app = await NestFactory.createApplicationContext(AppModule);
+  const planService = app.get(PlanService);
+  const planConfigService = new PlanConfigService();
 
+  console.log('🚀 Starting comprehensive plan seeding...\n');
+
+  // Validate configuration
+  planConfigService.validatePlanConfig();
+  
+  // Get all plan data from enum configuration
+  const plans = planConfigService.getAllPlanSeedData();
+  
+  console.log(`Starting plan seeding process for ${plans.length} plans...\n`);
+  
+  let seededCount = 0;
+  let skippedCount = 0;
+  
   for (const plan of plans) {
-    const exists = await planRepo.findOne({ where: { name: plan.name } });
-    if (!exists) {
-      await planRepo.save(plan);
+    try {
+      // Check if plan already exists by name
+      const existingPlan = await planService.findByName(plan.name);
+      
+      if (existingPlan) {
+        console.log(`ℹ️ Plan "${plan.name}" already exists, skipping...`);
+        skippedCount++;
+        continue;
+      }
+      
+      // Create new plan
+      await planService.create(plan);
+      
+      console.log(`✅ Plan created: "${plan.name}"`);
+      seededCount++;
+      
+    } catch (error) {
+      console.error(`❌ Failed to seed plan "${plan.name}":`, error.message);
+      throw error;
     }
   }
+  
+  console.log(`\n🎉 Plan seeding completed!`);
+  console.log(`📊 Summary: Seeded: ${seededCount}, Skipped: ${skippedCount}`);
+  
+  console.log('\n📋 Plan Details:');
+  plans.forEach(plan => {
+    console.log(`• ${plan.name}: ${plan.price} ${plan.currency}`);
+    console.log(`  Features: ${plan.features.join(', ')}`);
+    console.log(`  Stripe Product ID: ${plan.stripeProductId}`);
+    console.log(`  Stripe Price ID: ${plan.stripePriceId}\n`);
+  });
+
+  await app.close();
 }
+
+bootstrap().catch(error => {
+  console.error('❌ Error seeding plans:', error);
+  process.exit(1);
+});
