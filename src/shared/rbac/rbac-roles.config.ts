@@ -4,6 +4,7 @@ import {
   RbacEntities,
   UserPermissions,
   NotificationPermissions,
+  ProgressPermissions,
 } from '../../utils/enums/rbac.enum';
 
 export interface RbacRole {
@@ -42,6 +43,15 @@ export const BASE_ADMIN: RbacRole = {
     NotificationPermissions.DELETE,
     NotificationPermissions.MARK_READ,
 
+    // Progress permissions
+    ProgressPermissions.VIEW_ONE,
+    ProgressPermissions.VIEW_ALL,
+    ProgressPermissions.CREATE,
+    ProgressPermissions.UPDATE,
+    ProgressPermissions.DELETE,
+    ProgressPermissions.VIEW_OWN,
+    ProgressPermissions.UPDATE_OWN,
+
   ],
 };
 
@@ -54,6 +64,10 @@ export const BASE_USER: RbacRole = {
     // User permissions
     UserPermissions.VIEW_PROFILE,
     UserPermissions.UPDATE_PROFILE,
+    
+    // Progress permissions - Users can view and update their own progress
+    ProgressPermissions.VIEW_OWN,
+    ProgressPermissions.UPDATE_OWN,
   ],
 };
 
@@ -66,6 +80,10 @@ export const BASE_GUEST: RbacRole = {
     // User permissions
     UserPermissions.VIEW_PROFILE,
     UserPermissions.UPDATE_PROFILE,
+    
+    // Progress permissions - Guests can view and update their own progress
+    ProgressPermissions.VIEW_OWN,
+    ProgressPermissions.UPDATE_OWN,
   ],
 };
 

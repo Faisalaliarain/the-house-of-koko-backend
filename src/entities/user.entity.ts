@@ -37,7 +37,7 @@ export class User {
   @Prop({ required: false })
   agreedToTerms: boolean;
 
-  @Prop({ enum: UserRole, default: UserRole.GUEST })
+  @Prop({ enum: UserRole, default: UserRole.USER })
   role: UserRole;
   @Prop({ type: Date })
   approvedAt?: Date;
@@ -131,6 +131,33 @@ export class User {
   // Company Profile
   @Prop({ type: Types.ObjectId, ref: 'CompanyProfiles' })
   companyProfile?: Types.ObjectId;
+
+  // Onboarding / Progress Tracking
+  @Prop({
+    enum: [
+      'registered',
+      'otp_verified',
+      'plan_selected',
+      'payment_confirmed',
+      'onboarding_completed',
+    ],
+    default: 'registered',
+  })
+  onboardingStep?:
+    | 'registered'
+    | 'otp_verified'
+    | 'plan_selected'
+    | 'payment_confirmed'
+    | 'onboarding_completed';
+
+  @Prop({ default: false })
+  hasPurchasedPlan?: boolean;
+
+  @Prop({ default: false })
+  hasCompletedOnboarding?: boolean;
+
+  @Prop()
+  selectedPlanId?: string;
 
   // Timestamps (Handled by timestamps: true)
   // createdAt and updatedAt are auto-generated

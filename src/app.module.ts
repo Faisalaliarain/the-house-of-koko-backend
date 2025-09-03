@@ -9,6 +9,8 @@ import { UploadModule } from './upload/upload.module';
 import {AuthModule} from "./shared/auth/auth.module";
 import { NotificationModule } from './shared/notification/notification.module';
 import { PlanModule } from './shared/plan/plan.module';
+import { PaymentModule } from './shared/payment/payment.module';
+import { MembershipModule } from './shared/membership/membership.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { PlanModule } from './shared/plan/plan.module';
     AuthModule,
     NotificationModule,
     PlanModule,
+    PaymentModule,
+    MembershipModule,
   ],
   controllers: [AppController],
   providers: [AppService],

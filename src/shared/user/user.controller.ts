@@ -8,8 +8,8 @@ import {
 } from '@nestjs/swagger';
 import { Policy } from '../decorators/policy.decorator';
 import { UserService } from './user.service';
-import { getUserbyIdDTO, UserResponseDto } from './user.dto';
-import {UserPermissions, RbacEntities, EntityPath} from '../../utils/enums/rbac.enum';
+import { getUserbyIdDTO, UserResponseDto, UpdateProgressDto } from './user.dto';
+import {UserPermissions, RbacEntities, EntityPath, ProgressPermissions} from '../../utils/enums/rbac.enum';
 import { AuthenticatedRequest } from '../../utils/interfaces/authenticated-request.interface';
 
 @ApiTags('User')
@@ -34,6 +34,43 @@ export class UserController {
 
 
         return await this.userService.getLoggedInUser(req)
+    }
+
+    @Get('progress')
+    @ApiOperation({ summary: 'Get onboarding/progress for current user' })
+    @ApiBearerAuth('bearer')
+    @Policy({
+      permission: ProgressPermissions.VIEW_OWN,
+      type: RbacEntities.USER,
+      checkOwnership: false,
+    })
+    async getProgress(@Req() req: AuthenticatedRequest) {
+      const res = await this.userService.getLoggedInUser(req);
+      console.log("res",res)
+      // Return only progress fields
+      const data = res?.data || {} as any;
+      const progress = {
+        onboardingStep: data.onboardingStep,
+        hasPurchasedPlan: data.hasPurchasedPlan,
+        hasCompletedOnboarding: data.hasCompletedOnboarding,
+        hasCompletedPayment: data.hasCompletedPayment || data.hasPurchasedPlan, // Map to new field
+        hasSelectedInterests: data.hasSelectedInterests,
+        selectedPlanId: data.selectedPlanId,
+      };
+      return { message: 'OK', data: progress };
+    }
+  
+    @Post('progress')
+    @ApiOperation({ summary: 'Update onboarding/progress for current user' })
+    @ApiBearerAuth('bearer')
+    @Policy({
+      permission: ProgressPermissions.UPDATE_OWN,
+      type: RbacEntities.USER,
+      checkOwnership: false,
+    })
+    async updateProgress(@Req() req: AuthenticatedRequest, @Body() dto: UpdateProgressDto) {
+      const userId = req.user?.userId;
+      return this.userService.updateProgress(userId as string, dto);
     }
 
     @ApiOperation({ summary: 'Get user by ID' })
@@ -89,9 +126,9 @@ export class UserController {
         description: 'User approved successfully',
         type: UserResponseDto,
     })
-    async deleteUser(@Param('id') id: string) {
-        return this.userService.deleteUser(id);
-    }
+  async deleteUser(@Param('id') id: string) {
+      return this.userService.deleteUser(id);
+  }
 
     @Post('/user-requests')
     @ApiOperation({ summary: 'Get all pending users (Admin only)' })
@@ -106,7 +143,11 @@ export class UserController {
         description: 'List of users awaiting admin approval',
         type: [UserResponseDto],
     })
-    async getUsers() {
-        return this.userService.Users();
-    }
+  async getUsers() {
+      return this.userService.Users();
+  }
+
+
+
+
 }

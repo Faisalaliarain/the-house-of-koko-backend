@@ -73,7 +73,8 @@ export class AccessGuard implements CanActivate {
 
   private async getUserPermissions(userRole: UserRole): Promise<string[]> {
     // Find the role configuration
-    const roleConfig = RBAC_ROLES.find(role => role.machineName === this.getRoleMachineName(userRole));
+    const roleMachineName = this.getRoleMachineName(userRole);
+    const roleConfig = RBAC_ROLES.find(role => role.machineName === roleMachineName);
     
     if (!roleConfig) {
       return [];
@@ -84,6 +85,7 @@ export class AccessGuard implements CanActivate {
 
   private getRoleMachineName(userRole: UserRole): string {
     const roleMapping = {
+      [UserRole.SUPER]: 'SOX_BASE_ADMIN', // SUPER role maps to ADMIN permissions
       [UserRole.ADMIN]: 'SOX_BASE_ADMIN',
       [UserRole.USER]: 'SOX_BASE_USER',
       [UserRole.GUEST]: 'SOX_BASE_GUEST',

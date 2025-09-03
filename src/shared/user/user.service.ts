@@ -3,12 +3,19 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {User, UserDocument } from '../../entities/user.entity';
 import { UserRole } from '../../utils/enums/roles.enum';
-import { getUserbyIdDTO } from './user.dto';
+import { getUserbyIdDTO, UpdateProgressDto } from './user.dto';
 import { AuthenticatedRequest } from '../../utils/interfaces/authenticated-request.interface';  
 import {AwsSesService} from "../aws-ses/aws-ses-service";
 import {RbacRoleMachineName} from "../../utils/enums/rbac.enum";
 import {RBAC_ROLES, RoleMachineNameMap} from "../rbac/rbac-roles.config";
 import { S3Service } from '../services/s3.service';
+
+// Extend service with onboarding progress update
+export interface ProgressResult { message: string; data: Partial<User>; }
+
+// Add progress update method to the service
+export type OnboardingStep = 'registered' | 'otp_verified' | 'plan_selected' | '=' | 'onboarding_completed';
+
 @Injectable()
 export class UserService {
     constructor(
@@ -228,5 +235,21 @@ export class UserService {
             refresh_token: user.zoomRefreshToken,
             expires_at: user.zoomTokenExpiry.getTime(),
         };
+    }
+
+    async updateProgress(userId: string, dto: UpdateProgressDto): Promise<ProgressResult> {
+        const user = await this.userModel.findById(userId);
+        if (!user) throw new NotFoundException('User not found');
+
+        if (dto.onboardingStep) (user as any).onboardingStep = dto.onboardingStep as OnboardingStep;
+        if (typeof dto.hasPurchasedPlan === 'boolean') (user as any).hasPurchasedPlan = dto.hasPurchasedPlan;
+        if (typeof dto.hasCompletedOnboarding === 'boolean') (user as any).hasCompletedOnboarding = dto.hasCompletedOnboarding;
+        if (typeof dto.hasCompletedPayment === 'boolean') (user as any).hasCompletedPayment = dto.hasCompletedPayment;
+        if (typeof dto.hasSelectedInterests === 'boolean') (user as any).hasSelectedInterests = dto.hasSelectedInterests;
+        if (dto.selectedPlanId) (user as any).selectedPlanId = dto.selectedPlanId;
+
+        await user.save();
+        const { password, ...rest } = user.toObject();
+        return { message: 'Progress updated', data: rest };
     }
 }

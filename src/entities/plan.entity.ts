@@ -28,6 +28,12 @@ export class Plan {
 
   @Prop({ default: true })
   isActive: boolean;
+
+  @Prop({ type: Date })
+  createdAt?: Date;
+
+  @Prop({ type: Date })
+  updatedAt?: Date;
 }
 
 export const PlanSchema = SchemaFactory.createForClass(Plan);

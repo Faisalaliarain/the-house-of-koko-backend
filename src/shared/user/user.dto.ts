@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsMongoId } from "class-validator";
+import { IsNotEmpty, IsMongoId, IsBoolean, IsOptional, IsIn, IsString } from "class-validator";
 import {UserRole} from "../../utils/enums/roles.enum";
 
 export class getUserbyIdDTO {
@@ -45,6 +45,48 @@ export class UserResponseDto {
     additionalProperties: { type: 'boolean' },
   })
   permissions: { [key: string]: boolean };
+}
+
+
+export class UpdateProgressDto {
+  @ApiProperty({
+    enum: [
+      'registered',
+      'otp_verified',
+      'plan_selected',
+      'payment_confirmed',
+      'onboarding_completed',
+    ],
+    required: false,
+  })
+  @IsOptional()
+  @IsIn(['registered','otp_verified','plan_selected','payment_confirmed','onboarding_completed'])
+  onboardingStep?: 'registered' | 'otp_verified' | 'plan_selected' | 'payment_confirmed' | 'onboarding_completed';
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  hasPurchasedPlan?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  hasCompletedOnboarding?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  hasCompletedPayment?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  hasSelectedInterests?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  selectedPlanId?: string;
 }
 
 

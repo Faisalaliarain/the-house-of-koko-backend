@@ -138,6 +138,8 @@ export class AuthService {
     // lp or gp
     user.otp = null;
     user.otpExpiry = null;
+    // Track onboarding progress
+    (user as any).onboardingStep = 'otp_verified';
 
     await user.save();
 
