@@ -159,6 +159,10 @@ export class User {
   @Prop()
   selectedPlanId?: string;
 
+  // Stripe Integration
+  @Prop()
+  stripeCustomerId?: string;
+
   // Timestamps (Handled by timestamps: true)
   // createdAt and updatedAt are auto-generated
 }

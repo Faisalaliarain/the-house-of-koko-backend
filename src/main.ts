@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { PlanService } from './shared/plan/plan.service';
 import { PlanConfigService } from './utils/services/plan-config.service';
+import * as express from 'express';
 
 const logger = new Logger('Bootstrap');
 
@@ -13,6 +14,9 @@ async function bootstrap() {
     const title = 'The project-name Api Documentation';
     const description = 'The PWA API documentation';
     const app = await NestFactory.create(AppModule);
+    
+    // Configure raw body for webhooks
+    app.use('/api/webhook/stripe', express.raw({ type: 'application/json' }));
     
     app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
     app.enableCors();

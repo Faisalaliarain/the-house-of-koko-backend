@@ -29,6 +29,8 @@ import {
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
+
+  
   @Post('create-intent')
   @ApiOperation({ summary: 'Create payment intent for a plan' })
   @ApiResponse({ status: 201, description: 'Payment intent created successfully', type: PaymentResponseDto })
@@ -53,35 +55,36 @@ export class PaymentController {
     };
   }
 
-  @Post('confirm')
-  @ApiOperation({ summary: 'Confirm payment and create membership' })
-  @ApiResponse({ status: 200, description: 'Payment confirmed successfully' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 404, description: 'Payment not found' })
-  @HttpCode(HttpStatus.OK)
-  async confirmPayment(@Body() confirmPaymentDto: ConfirmPaymentDto) {
-    const result = await this.paymentService.confirmPayment(confirmPaymentDto.paymentId);
-    
-    return {
-      success: true,
-      message: 'Payment confirmed and membership created successfully',
-      data: {
-        payment: {
-          id: result.payment._id,
-          status: result.payment.status,
-          amount: result.payment.amount,
-          currency: result.payment.currency,
-          paidAt: result.payment.paidAt,
-        },
-        membership: {
-          id: result.membership._id,
-          status: result.membership.status,
-          startDate: result.membership.startDate,
-          endDate: result.membership.endDate,
-        },
-      },
-    };
-  }
+  // Manual payment confirmation is now handled via webhooks
+  // @Post('confirm')
+  // @ApiOperation({ summary: 'Confirm payment and create membership' })
+  // @ApiResponse({ status: 200, description: 'Payment confirmed successfully' })
+  // @ApiResponse({ status: 400, description: 'Bad request' })
+  // @ApiResponse({ status: 404, description: 'Payment not found' })
+  // @HttpCode(HttpStatus.OK)
+  // async confirmPayment(@Body() confirmPaymentDto: ConfirmPaymentDto) {
+  //   const result = await this.paymentService.confirmPayment(confirmPaymentDto.paymentId);
+  //   
+  //   return {
+  //     success: true,
+  //     message: 'Payment confirmed and membership created successfully',
+  //     data: {
+  //       payment: {
+  //         id: result.payment._id,
+  //         status: result.payment.status,
+  //         amount: result.payment.amount,
+  //         currency: result.payment.currency,
+  //         paidAt: result.payment.paidAt,
+  //       },
+  //       membership: {
+  //         id: result.membership._id,
+  //         status: result.membership.status,
+  //         startDate: result.membership.startDate,
+  //         endDate: result.membership.endDate,
+  //       },
+  //     },
+  //   };
+  // }
 
   @Post('cancel')
   @ApiOperation({ summary: 'Cancel a pending payment' })
@@ -157,32 +160,5 @@ export class PaymentController {
         updatedAt: (payment as any).updatedAt,
       },
     };
-  }
-
-  @Post('webhook')
-  @ApiOperation({ summary: 'Handle Stripe webhook events' })
-  @ApiResponse({ status: 200, description: 'Webhook processed successfully' })
-  @HttpCode(HttpStatus.OK)
-  async handleWebhook(@Req() req: RawBodyRequest<Request>) {
-    const signature = req.headers['stripe-signature'] as string;
-    const payload = req.rawBody;
-
-    if (!signature || !payload) {
-      throw new Error('Missing signature or payload');
-    }
-
-    // Verify webhook signature and process event
-    // This would typically use Stripe's webhook signature verification
-    // For now, we'll assume the event is already verified
-    
-    try {
-      const event = JSON.parse(payload.toString());
-      await this.paymentService.processWebhook(event);
-      
-      return { received: true };
-    } catch (error) {
-      console.error('Webhook processing failed:', error);
-      throw error;
-    }
   }
 }

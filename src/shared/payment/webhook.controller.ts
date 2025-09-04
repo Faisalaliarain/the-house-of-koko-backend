@@ -1,34 +1,53 @@
-import { Controller, Post, Req, Res } from '@nestjs/common';
+import { Controller, Post, Req, Res, Logger, RawBodyRequest } from '@nestjs/common';
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
+import { PaymentService } from './payment.service';
 
-@Controller('payment/webhook')
+@Controller('webhook')
 export class WebhookController {
-  @Post()
-  async handleStripeWebhook(@Req() req: Request, @Res() res: Response) {
-    const sig = req.headers['stripe-signature'];
+  private readonly logger = new Logger(WebhookController.name);
+  private stripe: Stripe;
+
+  constructor(private readonly paymentService: PaymentService) {
+    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2025-06-30.basil',
+    });
+  }
+
+  @Post('stripe')
+  async handleStripeWebhook(@Req() req: RawBodyRequest<Request>, @Res() res: Response) {
+    const sig = req.headers['stripe-signature'] as string;
+    const payload = req.body;
     let event: Stripe.Event;
+
+    this.logger.log('Received webhook request');
+
+    if (!sig || !payload) {
+      this.logger.error('Missing signature or payload');
+      return res.status(400).send('Missing signature or payload');
+    }
+
     try {
-      event = (new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-06-30.basil' })).webhooks.constructEvent(
-        req.body,
-        sig as string,
+      // Verify webhook signature
+      event = this.stripe.webhooks.constructEvent(
+        payload,
+        sig,
         process.env.STRIPE_WEBHOOK_SECRET!
       );
     } catch (err) {
+      this.logger.error(`Webhook signature verification failed: ${err.message}`);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    // Handle event types (e.g., payment_intent.succeeded, invoice.paid, etc.)
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        // TODO: handle successful payment
-        break;
-      case 'invoice.paid':
-        // TODO: handle successful subscription payment
-        break;
-      // Add more cases as needed
-      default:
-        break;
+
+    this.logger.log(`Received webhook event: ${event.type}`);
+
+    try {
+      // Process the webhook event
+      await this.paymentService.processWebhook(event);
+      res.json({ received: true });
+    } catch (error) {
+      this.logger.error(`Webhook processing failed: ${error.message}`);
+      res.status(500).json({ error: 'Webhook processing failed' });
     }
-    res.json({ received: true });
   }
 }

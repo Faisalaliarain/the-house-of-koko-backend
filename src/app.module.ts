@@ -11,6 +11,7 @@ import { NotificationModule } from './shared/notification/notification.module';
 import { PlanModule } from './shared/plan/plan.module';
 import { PaymentModule } from './shared/payment/payment.module';
 import { MembershipModule } from './shared/membership/membership.module';
+import { WebhookModule } from './shared/webhook/webhook.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { MembershipModule } from './shared/membership/membership.module';
     PlanModule,
     PaymentModule,
     MembershipModule,
+    WebhookModule,
   ],
   controllers: [AppController],
   providers: [AppService],

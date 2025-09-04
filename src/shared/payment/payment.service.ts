@@ -24,6 +24,31 @@ export class PaymentService {
   }
 
   /**
+   * Create or get Stripe customer for user
+   */
+  private async getOrCreateStripeCustomer(user: UserDocument): Promise<string> {
+    if (user.stripeCustomerId) {
+      return user.stripeCustomerId;
+    }
+
+    // Create new Stripe customer
+    const customer = await this.stripe.customers.create({
+      email: user.email,
+      name: user.name,
+      metadata: {
+        userId: user._id.toString(),
+      },
+    });
+
+    // Update user with Stripe customer ID
+    user.stripeCustomerId = customer.id;
+    await user.save();
+
+    this.logger.log(`Created Stripe customer ${customer.id} for user ${user._id}`);
+    return customer.id;
+  }
+
+  /**
    * Create a payment intent for a plan
    */
   async createPaymentIntent(userId: string, planId: string): Promise<{
@@ -44,6 +69,9 @@ export class PaymentService {
         throw new NotFoundException('Plan not found');
       }
 
+      // Get or create Stripe customer
+      const stripeCustomerId = await this.getOrCreateStripeCustomer(user);
+
       // Check if user already has an active membership
       const existingMembership = await this.membershipModel.findOne({
         userId: new Types.ObjectId(userId),
@@ -59,6 +87,7 @@ export class PaymentService {
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount: Math.round(plan.price * 100), // Convert to cents
         currency: plan.currency.toLowerCase(),
+        customer: stripeCustomerId,
         metadata: {
           userId,
           planId,
