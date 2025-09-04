@@ -3,6 +3,25 @@ import { Document, Types } from 'mongoose';
 
 export type EventDocument = Event & Document;
 
+@Schema({ _id: false })
+export class Seat {
+  @Prop({ required: true })
+  seatNumber: string; // e.g. "A1", "B2"
+
+  @Prop({ required: true })
+  price: number;
+
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  userId?: Types.ObjectId;
+  
+  @Prop({ default: 'available', enum: ['available', 'reserved', 'booked'] })
+  status: 'available' | 'reserved' | 'booked';
+
+  @Prop({ type: Date, default: null })
+  reservedUntil?: Date; // auto-expire reservation after 10 min
+}
+export const SeatSchema = SchemaFactory.createForClass(Seat);
+
 @Schema({ timestamps: true, collection: 'events' })
 export class Event {
   @Prop({ required: true, unique: true })
@@ -10,16 +29,6 @@ export class Event {
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   category: Types.ObjectId;
-
-  @Prop({
-    type: {
-      min: { type: Number, required: true },
-      max: { type: Number, required: true },
-      currency: { type: String, default: 'GBP' },
-    },
-    required: true,
-  })
-  price: { min: number; max: number; currency: string };
 
   @Prop()
   status?: string;
@@ -49,7 +58,9 @@ export class Event {
 
   @Prop()
   description?: string;
+
+  @Prop({ type: [SeatSchema], default: [] })
+  seats: Seat[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
-

@@ -53,4 +53,67 @@ export class EventService {
   async findAll(): Promise<EventDocument[]> {
     return this.eventModel.find({}).populate('category').exec();
   }
+
+  async findSeats(eventId: string) {
+  const event = await this.eventModel.findById(eventId).exec();
+  if (!event) return null;
+
+  // Auto-expire reservations if time passed
+  event.seats.forEach(seat => {
+    if (seat.status === 'reserved' && seat.reservedUntil && seat.reservedUntil < new Date()) {
+      seat.status = 'available';
+      seat.reservedUntil = null;
+    }
+  });
+
+  // Save only if something changed
+  await event.save();
+
+  return event.seats;
 }
+
+async reserveSeat(eventId: string, seatNumber: string, userId: string) {
+  const event = await this.eventModel.findById(eventId).exec();
+  if (!event) throw new Error('Event not found');
+
+  const seat = event.seats.find(s => s.seatNumber === seatNumber);
+  if (!seat) throw new Error('Seat not found');
+
+  if (seat.status !== 'available') throw new Error('Seat not available');
+
+  seat.status = 'reserved';
+  seat.userId = new Types.ObjectId(userId);
+  seat.reservedUntil = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+  await event.save();
+  return seat;
+}
+
+async bookSeat(eventId: string, seatNumber: string, userId: string) {
+  const event = await this.eventModel.findById(eventId).exec();
+  if (!event) throw new Error('Event not found');
+
+  const seat = event.seats.find(s => s.seatNumber === seatNumber);
+  if (!seat) throw new Error('Seat not found');
+
+  // validate reservation
+  if (seat.status !== 'reserved' || String(seat.userId) !== userId) {
+    throw new Error('Seat is not reserved by this user');
+  }
+  if (seat.reservedUntil && seat.reservedUntil < new Date()) {
+    seat.status = 'available';
+    seat.userId = undefined;
+    seat.reservedUntil = undefined;
+    await event.save();
+    throw new Error('Reservation expired');
+  }
+
+  seat.status = 'booked';
+  seat.reservedUntil = undefined;
+  await event.save();
+
+  return seat;
+}
+
+}
+

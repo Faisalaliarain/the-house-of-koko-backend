@@ -1,14 +1,28 @@
 export type EventSeed = {
   title: string;
-  categorySlug: string; // will be resolved to category ObjectId
+  categorySlug: string;
   price: { min: number; max: number; currency: string };
   status?: string;
   datetime?: { date?: string; start_time?: string; end_time?: string; timezone?: string };
   venue?: { name?: string; address?: string | null; city?: string; country?: string };
   image_url?: string;
   description?: string;
+  seats?: { seatNumber: string; price: number; status: 'available' | 'reserved' | 'booked' }[];
 };
 
+function generateSeats(rows: string[], seatsPerRow: number, basePrice: number) {
+  const seats = [];
+  rows.forEach((row, rIndex) => {
+    for (let i = 1; i <= seatsPerRow; i++) {
+      seats.push({
+        seatNumber: `${row}${i}`,
+        price: basePrice + rIndex * 20 + i * 5,
+        status: 'available' as const,
+      });
+    }
+  });
+  return seats;
+}
 export const EVENT_SEED_DATA: EventSeed[] = [
   {
     title: 'Amos Lee Concert',
@@ -18,8 +32,8 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     datetime: { date: '2025-07-17', start_time: '18:00', end_time: '20:00', timezone: 'Europe/London' },
     venue: { name: 'Main Theatre, The House of KOKO', address: null, city: 'London', country: 'UK' },
     image_url: 'https://example.com/event-images/amos-lee.jpg',
-    description:
-      "Over a storied and prolific career spanning two decades, Philadelphia songwriter Amos Lee has traversed folk and soul-pop, country & more, supporting the likes of Bob Dylan, Paul Simon and playing for Barack Obama.",
+    description: 'Over a storied and prolific career spanning two decades...',
+    seats: generateSeats(['A', 'B'], 10, 100), // A1–A10, B1–B10
   },
   {
     title: 'Sunset Rooftop DJ Set',
@@ -29,7 +43,8 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     datetime: { date: '2025-08-12', start_time: '19:00', end_time: '23:00', timezone: 'Europe/London' },
     venue: { name: 'Rooftop Terrace, The House of KOKO', address: null, city: 'London', country: 'UK' },
     image_url: 'https://example.com/event-images/rooftop-dj.jpg',
-    description: 'DJs spinning house and nu‑disco as the sun sets over Camden.'
+    description: 'DJs spinning house and nu-disco as the sun sets...',
+    seats: generateSeats(['A'], 20, 50), // A1–A20
   },
   {
     title: 'Jazz & Soul Evening',
@@ -39,7 +54,8 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     datetime: { date: '2025-09-05', start_time: '20:00', end_time: '22:30', timezone: 'Europe/London' },
     venue: { name: "Ellen's Lounge", address: null, city: 'London', country: 'UK' },
     image_url: 'https://example.com/event-images/jazz-soul.jpg',
-    description: 'An intimate night of classic standards and modern soul.'
+    description: 'An intimate night of classic standards...',
+    seats: generateSeats(['A', 'B', 'C'], 5, 80), // small lounge
   },
   {
     title: 'Livestream: Behind the Scenes with KOKO',
@@ -49,7 +65,8 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     datetime: { date: '2025-07-30', start_time: '17:00', end_time: '18:00', timezone: 'Europe/London' },
     venue: { name: 'Online', address: null, city: 'London', country: 'UK' },
     image_url: 'https://example.com/event-images/bts.jpg',
-    description: 'Exclusive interviews, studio sessions, and playlists via the app.'
+    description: 'Exclusive interviews, studio sessions...',
+    seats: [], // no seats for livestream
   },
   {
     title: 'Hybrid Panel: Music Production Masterclass',
@@ -59,7 +76,7 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     datetime: { date: '2025-10-01', start_time: '16:00', end_time: '18:30', timezone: 'Europe/London' },
     venue: { name: 'Studio A, The House of KOKO', address: null, city: 'London', country: 'UK' },
     image_url: 'https://example.com/event-images/masterclass.jpg',
-    description: 'Hands‑on session with producers; attend in person or stream online.'
+    description: 'Hands-on session with producers...',
+    seats: generateSeats(['A'], 15, 120),
   },
 ];
-
