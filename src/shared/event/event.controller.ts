@@ -74,7 +74,7 @@ export class EventController {
   @ApiOperation({ summary: 'Book a seat' })
   async book(
     @Param('id') id: string,
-    @Body() body: BookSeatDto,
+    @Body() body: any,
   ) {
     const seat = await this.eventService.bookSeat(id, body.seatNumber, body.userId);
     return { message: 'Seat booked successfully', data: seat };
