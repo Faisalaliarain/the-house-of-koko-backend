@@ -31,7 +31,7 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     status: 'Almost Sold Out',
     datetime: { date: '2025-07-17', start_time: '18:00', end_time: '20:00', timezone: 'Europe/London' },
     venue: { name: 'Main Theatre, The House of KOKO', address: null, city: 'London', country: 'UK' },
-    image_url: 'https://example.com/event-images/amos-lee.jpg',
+    image_url:  '/images/default-event.jpg',
     description: 'Over a storied and prolific career spanning two decades...',
     seats: generateSeats(['A', 'B'], 10, 100), // A1–A10, B1–B10
   },
@@ -42,9 +42,9 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     status: 'Tickets Available',
     datetime: { date: '2025-08-12', start_time: '19:00', end_time: '23:00', timezone: 'Europe/London' },
     venue: { name: 'Rooftop Terrace, The House of KOKO', address: null, city: 'London', country: 'UK' },
-    image_url: 'https://example.com/event-images/rooftop-dj.jpg',
+    image_url: '/images/default-event.jpg',
     description: 'DJs spinning house and nu-disco as the sun sets...',
-    seats: generateSeats(['A'], 20, 50), // A1–A20
+    seats: generateSeats(['A'], 20, 50),
   },
   {
     title: 'Jazz & Soul Evening',
@@ -53,9 +53,9 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     status: 'Limited',
     datetime: { date: '2025-09-05', start_time: '20:00', end_time: '22:30', timezone: 'Europe/London' },
     venue: { name: "Ellen's Lounge", address: null, city: 'London', country: 'UK' },
-    image_url: 'https://example.com/event-images/jazz-soul.jpg',
+    image_url: '/images/default-event.jpg',
     description: 'An intimate night of classic standards...',
-    seats: generateSeats(['A', 'B', 'C'], 5, 80), // small lounge
+    seats: generateSeats(['A', 'B', 'C'], 5, 80),
   },
   {
     title: 'Livestream: Behind the Scenes with KOKO',
@@ -64,9 +64,9 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     status: 'Streaming Soon',
     datetime: { date: '2025-07-30', start_time: '17:00', end_time: '18:00', timezone: 'Europe/London' },
     venue: { name: 'Online', address: null, city: 'London', country: 'UK' },
-    image_url: 'https://example.com/event-images/bts.jpg',
+    image_url: '/images/default-event.jpg',
     description: 'Exclusive interviews, studio sessions...',
-    seats: [], // no seats for livestream
+    seats: [],
   },
   {
     title: 'Hybrid Panel: Music Production Masterclass',
@@ -75,7 +75,7 @@ export const EVENT_SEED_DATA: EventSeed[] = [
     status: 'Tickets Available',
     datetime: { date: '2025-10-01', start_time: '16:00', end_time: '18:30', timezone: 'Europe/London' },
     venue: { name: 'Studio A, The House of KOKO', address: null, city: 'London', country: 'UK' },
-    image_url: 'https://example.com/event-images/masterclass.jpg',
+    image_url: '/images/default-event.jpg',
     description: 'Hands-on session with producers...',
     seats: generateSeats(['A'], 15, 120),
   },
